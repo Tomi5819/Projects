@@ -27,7 +27,6 @@ public class Main {
         // Bucle del menú principal
         while (!salir) {
 
-            // Muestra el menú principal
             System.out.println();
             System.out.println("===== MENÚ PRINCIPAL =====");
             System.out.println("1. Crear personaje");
