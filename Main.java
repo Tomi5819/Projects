@@ -1,30 +1,24 @@
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
-    // Método principal del programa
     public static void main(String[] args) {
 
-        // Scanner para leer datos del usuario
         Scanner scanner = new Scanner(System.in);
 
-        // Lista que guarda todos los personajes creados
+        //Crea la lista de personajes
         ArrayList<Personaje> personajes = new ArrayList<Personaje>();
 
-        // Lista que guarda los objetos mágicos precargados
+        //Crea la lista de objetos mágicos
         ArrayList<ObjetoMagico> objetosMagicos = new ArrayList<ObjetoMagico>();
 
-        // Agrega el primer objeto mágico precargado
         objetosMagicos.add(new ObjetoMagico("Bastón antiguo", "Bastón", 40, 20));
 
-        // Agrega el segundo objeto mágico precargado
         objetosMagicos.add(new ObjetoMagico("Amuleto brillante", "Amuleto", 25, 20));
 
-        // Variable para controlar el menú principal
         boolean salir = false;
 
-        // Bucle del menú principal
+        //Bucle del menú principal
         while (!salir) {
 
             System.out.println();
@@ -37,167 +31,172 @@ public class Main {
                 System.out.println("3. Ver personajes creados");
             }
 
-            // Opción para terminar el programa
             System.out.println("0. Salir");
             System.out.print("Elige una opción: ");
 
-            // Lee la opción elegida
             int opcion = scanner.nextInt();
 
-            // Limpia el salto de línea pendiente
             scanner.nextLine();
 
-            // Opción para crear un personaje
-            if (opcion == 1) {
+            switch (opcion) {
+                case 1:
+                    crearPersonaje(scanner, personajes);
+                    break;
 
-                // Muestra los tipos de personaje disponibles
-                System.out.println();
-                System.out.println("Elige el tipo de personaje:");
-                System.out.println("1. Guerrero");
-                System.out.println("2. Mago");
-                System.out.print("Opción: ");
+                case 2:
+                    if (personajes.size() > 0) {
+                        mostrarPersonajes(personajes);
 
-                // Lee el tipo elegido
-                int tipo = scanner.nextInt();
+                        System.out.print("Elige un personaje: ");
+                        int numeroPersonaje = scanner.nextInt();
 
-                // Limpia el salto de línea pendiente
-                scanner.nextLine();
+                        scanner.nextLine();
 
-                // Pide el nombre del personaje
-                System.out.print("Nombre: ");
-                String nombre = scanner.nextLine();
+                        // Calcula la posición real en la lista
+                        int posicion = numeroPersonaje - 1;
 
-                // Pide la salud del personaje
-                System.out.print("Salud: ");
-                int salud = scanner.nextInt();
+                        // Comprueba si la posición es válida
+                        if (posicion >= 0 && posicion < personajes.size()) {
+                            // Obtiene el personaje seleccionado
+                            Personaje personajeElegido = personajes.get(posicion);
 
-                // Pide el nivel del personaje
-                System.out.print("Nivel: ");
-                int nivel = scanner.nextInt();
+                            // Abre el menú del personaje seleccionado
+                            usarPersonaje(scanner, personajeElegido, personajes, objetosMagicos);
+                        } else {
+                            // Muestra un mensaje si no existe
+                            System.out.println("Personaje no válido.");
+                        }
+                    } else {
+                        // Muestra un mensaje si no hay personajes
+                        System.out.println("Primero debes crear un personaje.");
+                    }
+                    break;
 
-                // Limpia el salto de línea pendiente
-                scanner.nextLine();
+                case 3:
+                    // Comprueba si ya existen personajes
+                    if (personajes.size() > 0) {
+                        // Muestra todos los personajes
+                        mostrarPersonajes(personajes);
+                    } else {
+                        // Muestra un mensaje si no hay personajes
+                        System.out.println("Primero debes crear un personaje.");
+                    }
+                    break;
 
-                // Si el usuario quiere crear un guerrero
-                if (tipo == 1) {
+                case 0:
+                    // Cambia la variable para cerrar el bucle
+                    salir = true;
 
-                    // Pide la fuerza del guerrero
-                    System.out.print("Fuerza: ");
-                    int fuerza = scanner.nextInt();
+                    // Muestra un mensaje final
+                    System.out.println("Programa terminado.");
+                    break;
 
-                    // Pide la defensa del guerrero
-                    System.out.print("Defensa: ");
-                    int defensa = scanner.nextInt();
-
-                    // Limpia el salto de línea pendiente
-                    scanner.nextLine();
-
-                    // Crea el guerrero
-                    Guerrero guerrero = new Guerrero(nombre, salud, fuerza, defensa, nivel);
-
-                    // Guarda el guerrero en la lista de personajes
-                    personajes.add(guerrero);
-
-                    // Muestra un mensaje de confirmación
-                    System.out.println("Guerrero creado correctamente.");
-
-                // Si el usuario quiere crear un mago
-                } else if (tipo == 2) {
-
-                    // Pide el maná del mago
-                    System.out.print("Maná: ");
-                    int mana = scanner.nextInt();
-
-                    // Pide la inteligencia del mago
-                    System.out.print("Inteligencia: ");
-                    int inteligencia = scanner.nextInt();
-
-                    // Limpia el salto de línea pendiente
-                    scanner.nextLine();
-
-                    // Crea el mago
-                    Mago mago = new Mago(nombre, salud, mana, inteligencia, nivel);
-
-                    // Crea un inventario individual para este mago
-                    Inventario inventario = crearInventarioPrecargado();
-
-                    // Asigna el inventario al mago
-                    mago.setInventario(inventario);
-
-                    // Agrega hechizos iniciales al mago
-                    mago.agregarHechizo("Bola de fuego");
-                    mago.agregarHechizo("Escudo mágico");
-                    mago.agregarHechizo("Rayo de hielo");
-                    mago.agregarHechizo("Tormenta eléctrica");
-                    mago.agregarHechizo("Luz sagrada");
-
-                    // Guarda el mago en la lista de personajes
-                    personajes.add(mago);
-
-                    // Muestra un mensaje de confirmación
-                    System.out.println("Mago creado correctamente.");
-
-                } else {
-
-                    // Muestra un mensaje si el tipo no existe
-                    System.out.println("Tipo de personaje no válido.");
-                }
-
-            // Opción para seleccionar un personaje creado
-            } else if (opcion == 2 && personajes.size() > 0) {
-
-                // Muestra todos los personajes disponibles
-                mostrarPersonajes(personajes);
-
-                // Pide el número de personaje
-                System.out.print("Elige un personaje: ");
-                int numeroPersonaje = scanner.nextInt();
-
-                // Limpia el salto de línea pendiente
-                scanner.nextLine();
-
-                // Calcula la posición real en la lista
-                int posicion = numeroPersonaje - 1;
-
-                // Comprueba si la posición es válida
-                if (posicion >= 0 && posicion < personajes.size()) {
-
-                    // Obtiene el personaje seleccionado
-                    Personaje personajeElegido = personajes.get(posicion);
-
-                    // Abre el menú del personaje seleccionado
-                    usarPersonaje(scanner, personajeElegido, personajes, objetosMagicos);
-
-                } else {
-
-                    // Muestra un mensaje si no existe
-                    System.out.println("Personaje no válido.");
-                }
-
-            // Opción para ver los personajes creados
-            } else if (opcion == 3 && personajes.size() > 0) {
-
-                // Muestra todos los personajes
-                mostrarPersonajes(personajes);
-
-            // Opción para salir
-            } else if (opcion == 0) {
-
-                // Cambia la variable para cerrar el bucle
-                salir = true;
-
-                // Muestra un mensaje final
-                System.out.println("Programa terminado.");
-
-            } else {
-
-                // Muestra un mensaje si la opción no sirve
-                System.out.println("Opción no válida.");
+                default:
+                    // Muestra un mensaje si la opción no sirve
+                    System.out.println("Opción no válida.");
+                    break;
             }
         }
 
         // Cierra el Scanner
         scanner.close();
+    }
+
+    // Método que crea un personaje según el tipo elegido
+    public static void crearPersonaje(Scanner scanner, ArrayList<Personaje> personajes) {
+
+        // Muestra los tipos de personaje disponibles
+        System.out.println();
+        System.out.println("Elige el tipo de personaje:");
+        System.out.println("1. Guerrero");
+        System.out.println("2. Mago");
+        System.out.print("Opción: ");
+
+        // Lee el tipo elegido
+        int tipo = scanner.nextInt();
+
+        // Limpia el salto de línea pendiente
+        scanner.nextLine();
+
+        // Pide el nombre del personaje
+        System.out.print("Nombre: ");
+        String nombre = scanner.nextLine();
+
+        // Pide la salud del personaje
+        System.out.print("Salud: ");
+        int salud = scanner.nextInt();
+
+        // Pide el nivel del personaje
+        System.out.print("Nivel: ");
+        int nivel = scanner.nextInt();
+
+        // Limpia el salto de línea pendiente
+        scanner.nextLine();
+
+        // Crea el personaje usando switch
+        switch (tipo) {
+            case 1:
+                // Pide la fuerza del guerrero
+                System.out.print("Fuerza: ");
+                int fuerza = scanner.nextInt();
+
+                // Pide la defensa del guerrero
+                System.out.print("Defensa: ");
+                int defensa = scanner.nextInt();
+
+                // Limpia el salto de línea pendiente
+                scanner.nextLine();
+
+                // Crea el guerrero
+                Guerrero guerrero = new Guerrero(nombre, salud, fuerza, defensa, nivel);
+
+                // Guarda el guerrero en la lista de personajes
+                personajes.add(guerrero);
+
+                // Muestra un mensaje de confirmación
+                System.out.println("Guerrero creado correctamente.");
+                break;
+
+            case 2:
+                // Pide el maná del mago
+                System.out.print("Maná: ");
+                int mana = scanner.nextInt();
+
+                // Pide la inteligencia del mago
+                System.out.print("Inteligencia: ");
+                int inteligencia = scanner.nextInt();
+
+                // Limpia el salto de línea pendiente
+                scanner.nextLine();
+
+                // Crea el mago
+                Mago mago = new Mago(nombre, salud, mana, inteligencia, nivel);
+
+                // Crea un inventario individual para este mago
+                Inventario inventario = crearInventarioPrecargado();
+
+                // Asigna el inventario al mago
+                mago.setInventario(inventario);
+
+                // Agrega hechizos iniciales al mago
+                mago.agregarHechizo("Bola de fuego");
+                mago.agregarHechizo("Escudo mágico");
+                mago.agregarHechizo("Rayo de hielo");
+                mago.agregarHechizo("Tormenta eléctrica");
+                mago.agregarHechizo("Luz sagrada");
+
+                // Guarda el mago en la lista de personajes
+                personajes.add(mago);
+
+                // Muestra un mensaje de confirmación
+                System.out.println("Mago creado correctamente.");
+                break;
+
+            default:
+                // Muestra un mensaje si el tipo no existe
+                System.out.println("Tipo de personaje no válido.");
+                break;
+        }
     }
 
     // Método que crea un inventario con objetos ya cargados
@@ -262,7 +261,7 @@ public class Main {
             // Usa el menú del guerrero
             menuGuerrero(scanner, guerrero, personajes);
 
-        // Comprueba si el personaje es mago
+            // Comprueba si el personaje es mago
         } else if (personaje instanceof Mago) {
 
             // Convierte el personaje a mago
@@ -300,81 +299,82 @@ public class Main {
             // Limpia el salto de línea pendiente
             scanner.nextLine();
 
-            // Ejecuta la opción elegida
-            if (opcion == 1) {
-                // Elige un objetivo para el ataque
-                Personaje objetivo = elegirObjetivo(scanner, personajes, guerrero);
+            // Ejecuta la opción elegida con switch
+            switch (opcion) {
+                case 1:
+                    // Elige un objetivo para el ataque
+                    Personaje objetivoAtaque = elegirObjetivo(scanner, personajes, guerrero);
 
-                // Ataca al objetivo elegido
-                guerrero.atacar(objetivo);
+                    // Ataca al objetivo elegido
+                    guerrero.atacar(objetivoAtaque);
+                    break;
 
-            } else if (opcion == 2) {
-                // Elige un objetivo para la espada
-                Personaje objetivo = elegirObjetivo(scanner, personajes, guerrero);
+                case 2:
+                    // Elige un objetivo para la espada
+                    Personaje objetivoEspada = elegirObjetivo(scanner, personajes, guerrero);
 
-                // Usa la espada contra el objetivo elegido
-                guerrero.usarEspada(objetivo);
+                    // Usa la espada contra el objetivo elegido
+                    guerrero.usarEspada(objetivoEspada);
+                    break;
 
-            } else if (opcion == 3) {
-                guerrero.gritarDesafio();
+                case 3:
+                    // Usa el grito de desafío
+                    guerrero.gritarDesafio();
+                    break;
 
-            } else if (opcion == 4) {
-                guerrero.gritarGuerra();
+                case 4:
+                    // Usa el grito de guerra
+                    guerrero.gritarGuerra();
+                    break;
 
-            } else if (opcion == 5) {
+                case 5:
+                    // Comprueba si el guerrero ya tiene mascota
+                    if (guerrero.getMascota() == null) {
+                        // Pide el nombre de la mascota
+                        System.out.print("Nombre de la mascota: ");
+                        String nombreMascota = scanner.nextLine();
 
-                // Comprueba si el guerrero ya tiene mascota
-                if (guerrero.getMascota() == null) {
+                        // Pide la lealtad de la mascota
+                        System.out.print("Lealtad: ");
+                        int lealtad = scanner.nextInt();
 
-                    // Pide el nombre de la mascota
-                    System.out.print("Nombre de la mascota: ");
-                    String nombreMascota = scanner.nextLine();
+                        // Limpia el salto de línea pendiente
+                        scanner.nextLine();
 
-                    // Pide la lealtad de la mascota
-                    System.out.print("Lealtad: ");
-                    int lealtad = scanner.nextInt();
+                        // Crea la mascota
+                        Mascota mascota = new Mascota(nombreMascota, lealtad);
 
-                    // Limpia el salto de línea pendiente
-                    scanner.nextLine();
+                        // Asigna la mascota al guerrero seleccionado
+                        guerrero.setMascota(mascota);
 
-                    // Crea la mascota
-                    Mascota mascota = new Mascota(nombreMascota, lealtad);
+                        // Muestra un mensaje de confirmación
+                        System.out.println("Mascota asignada correctamente.");
+                    } else {
+                        // Muestra un mensaje si ya tiene mascota
+                        System.out.println("Este guerrero ya tiene una mascota.");
+                    }
+                    break;
 
-                    // Asigna la mascota al guerrero seleccionado
-                    guerrero.setMascota(mascota);
+                case 6:
+                    // Comprueba si el guerrero tiene mascota
+                    if (guerrero.getMascota() != null) {
+                        // La mascota acompaña al guerrero
+                        guerrero.getMascota().acompañar();
+                    } else {
+                        // Muestra un mensaje si no tiene mascota
+                        System.out.println("Este guerrero no tiene mascota.");
+                    }
+                    break;
 
-                    // Muestra un mensaje de confirmación
-                    System.out.println("Mascota asignada correctamente.");
+                case 0:
+                    // Vuelve al menú principal
+                    volver = true;
+                    break;
 
-                } else {
-
-                    // Muestra un mensaje si ya tiene mascota
-                    System.out.println("Este guerrero ya tiene una mascota.");
-                }
-
-            } else if (opcion == 6) {
-
-                // Comprueba si el guerrero tiene mascota
-                if (guerrero.getMascota() != null) {
-
-                    // La mascota acompaña al guerrero
-                    guerrero.getMascota().acompañar();
-
-                } else {
-
-                    // Muestra un mensaje si no tiene mascota
-                    System.out.println("Este guerrero no tiene mascota.");
-                }
-
-            } else if (opcion == 0) {
-
-                // Vuelve al menú principal
-                volver = true;
-
-            } else {
-
-                // Muestra un mensaje si la opción no existe
-                System.out.println("Opción no válida.");
+                default:
+                    // Muestra un mensaje si la opción no existe
+                    System.out.println("Opción no válida.");
+                    break;
             }
         }
     }
@@ -408,100 +408,104 @@ public class Main {
             // Limpia el salto de línea pendiente
             scanner.nextLine();
 
-            // Ejecuta la opción elegida
-            if (opcion == 1) {
-                // Elige un objetivo para el ataque
-                Personaje objetivo = elegirObjetivo(scanner, personajes, mago);
+            // Ejecuta la opción elegida con switch
+            switch (opcion) {
+                case 1:
+                    // Elige un objetivo para el ataque
+                    Personaje objetivoAtaque = elegirObjetivo(scanner, personajes, mago);
 
-                // Ataca al objetivo elegido
-                mago.atacar(objetivo);
+                    // Ataca al objetivo elegido
+                    mago.atacar(objetivoAtaque);
+                    break;
 
-            } else if (opcion == 2) {
-                mago.recuperarMana();
+                case 2:
+                    // Recupera maná
+                    mago.recuperarMana();
+                    break;
 
-            } else if (opcion == 3) {
+                case 3:
+                    // Muestra la lista de hechizos conocidos
+                    mago.mostrarHechizosConocidos();
 
-                // Muestra la lista de hechizos conocidos
-                mago.mostrarHechizosConocidos();
+                    // Pide el número del hechizo
+                    System.out.print("Elige un hechizo: ");
+                    int numeroHechizo = scanner.nextInt();
 
-                // Pide el número del hechizo
-                System.out.print("Elige un hechizo: ");
-                int numeroHechizo = scanner.nextInt();
+                    // Limpia el salto de línea pendiente
+                    scanner.nextLine();
 
-                // Limpia el salto de línea pendiente
-                scanner.nextLine();
+                    // Obtiene el hechizo elegido
+                    String hechizo = mago.getHechizoConocido(numeroHechizo);
 
-                // Obtiene el hechizo elegido
-                String hechizo = mago.getHechizoConocido(numeroHechizo);
+                    // Comprueba si el hechizo existe
+                    if (hechizo != null) {
+                        // Elige un objetivo para el hechizo
+                        Personaje objetivoHechizo = elegirObjetivo(scanner, personajes, mago);
 
-                // Comprueba si el hechizo existe
-                if (hechizo != null) {
-                    // Elige un objetivo para el hechizo
-                    Personaje objetivo = elegirObjetivo(scanner, personajes, mago);
+                        // Lanza el hechizo contra el objetivo elegido
+                        mago.lanzarHechizo(hechizo, objetivoHechizo);
+                    } else {
+                        // Muestra un mensaje si el número no existe
+                        System.out.println("Hechizo no válido.");
+                    }
+                    break;
 
-                    // Lanza el hechizo contra el objetivo elegido
-                    mago.lanzarHechizo(hechizo, objetivo);
-                } else {
-                    // Muestra un mensaje si el número no existe
-                    System.out.println("Hechizo no válido.");
-                }
+                case 4:
+                    // Pide el elemento que se quiere invocar
+                    System.out.print("Elemento: ");
+                    String elemento = scanner.nextLine();
 
-            } else if (opcion == 4) {
+                    // Invoca el elemento
+                    mago.invocarElemento(elemento);
+                    break;
 
-                // Pide el elemento que se quiere invocar
-                System.out.print("Elemento: ");
-                String elemento = scanner.nextLine();
+                case 5:
+                    // Elige un objeto mágico precargado
+                    ObjetoMagico objetoUsar = elegirObjetoMagico(scanner, objetosMagicos);
 
-                // Invoca el elemento
-                mago.invocarElemento(elemento);
+                    // Comprueba si el objeto existe
+                    if (objetoUsar != null) {
+                        // El mago usa el objeto mágico
+                        mago.usarObjetoMagico(objetoUsar);
+                    }
+                    break;
 
-            } else if (opcion == 5) {
+                case 6:
+                    // Elige un objeto mágico precargado
+                    ObjetoMagico objetoReparar = elegirObjetoMagico(scanner, objetosMagicos);
 
-                // Elige un objeto mágico precargado
-                ObjetoMagico objeto = elegirObjetoMagico(scanner, objetosMagicos);
+                    // Comprueba si el objeto existe
+                    if (objetoReparar != null) {
+                        // Repara el objeto mágico
+                        objetoReparar.reparar();
+                    }
+                    break;
 
-                // Comprueba si el objeto existe
-                if (objeto != null) {
-                    // El mago usa el objeto mágico
-                    mago.usarObjetoMagico(objeto);
-                }
+                case 7:
+                    // Elige un objeto mágico precargado
+                    ObjetoMagico objetoPotencia = elegirObjetoMagico(scanner, objetosMagicos);
 
-            } else if (opcion == 6) {
+                    // Comprueba si el objeto existe
+                    if (objetoPotencia != null) {
+                        // Muestra la potencia del objeto
+                        System.out.println("Potencia del objeto mágico: " + objetoPotencia.getPotencia());
+                    }
+                    break;
 
-                // Elige un objeto mágico precargado
-                ObjetoMagico objeto = elegirObjetoMagico(scanner, objetosMagicos);
+                case 8:
+                    // Consulta el inventario individual del mago
+                    mago.getInventario().consultarInventario();
+                    break;
 
-                // Comprueba si el objeto existe
-                if (objeto != null) {
-                    // Repara el objeto mágico
-                    objeto.reparar();
-                }
+                case 0:
+                    // Vuelve al menú principal
+                    volver = true;
+                    break;
 
-            } else if (opcion == 7) {
-
-                // Elige un objeto mágico precargado
-                ObjetoMagico objeto = elegirObjetoMagico(scanner, objetosMagicos);
-
-                // Comprueba si el objeto existe
-                if (objeto != null) {
-                    // Muestra la potencia del objeto
-                    System.out.println("Potencia del objeto mágico: " + objeto.getPotencia());
-                }
-
-            } else if (opcion == 8) {
-
-                // Consulta el inventario individual del mago
-                mago.getInventario().consultarInventario();
-
-            } else if (opcion == 0) {
-
-                // Vuelve al menú principal
-                volver = true;
-
-            } else {
-
-                // Muestra un mensaje si la opción no existe
-                System.out.println("Opción no válida.");
+                default:
+                    // Muestra un mensaje si la opción no existe
+                    System.out.println("Opción no válida.");
+                    break;
             }
         }
     }
